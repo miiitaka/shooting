@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: #555;
+  color: #f0f0f0;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+  width: 100%;
+}
+
+canvas {
+  margin: 0 auto;
+}
