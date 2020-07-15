@@ -7,17 +7,19 @@ class Viper extends Character {
    * @param {CanvasRenderingContext2D} ctx - 描画などに利用する2Dコンテキスト
    * @param {number} x - X座標
    * @param {number} y - Y座標
+   * @param {number} w - 幅
+   * @param {number} h - 高さ
    * @param {Image} image - キャラクターの画像
    */
-  constructor(ctx, x, y, image) {
+  constructor(ctx, x, y, w, h, image) {
     // 親クラスのコンストラクタ呼出
-    super(ctx, x, y, 0, image);
+    super(ctx, x, y, w, h, 0, image);
 
     /**
   　 * viperの移動スピード
      * @type {number}
      */
-    this.speed = 10;
+    this.speed = 3;
 
     /**
   　 * viperの登場フラグ
@@ -90,6 +92,11 @@ class Viper extends Character {
       if (window.isKeyDown.key_ArrowDown) {
         this.position.y += this.speed;
       }
+      let canvasWidth = this.ctx.canvas.width;
+      let canvasHeight = this.ctx.canvas.height;
+      let tx = Math.min(Math.max(this.position.x, 0), canvasWidth);
+      let ty = Math.min(Math.max(this.position.y, 0), canvasHeight);
+      this.position.set(tx, ty);
     }
 
     this.draw();
