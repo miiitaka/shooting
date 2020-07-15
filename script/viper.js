@@ -14,6 +14,12 @@ class Viper extends Character {
     super(ctx, x, y, 0, image);
 
     /**
+  　 * viperの移動スピード
+     * @type {number}
+     */
+    this.speed = 10;
+
+    /**
   　 * viperの登場フラグ
      * @type {boolean}
      */
@@ -70,6 +76,19 @@ class Viper extends Character {
 
       if (justTime % 100 < 50) {
         this.ctx.globalAlpha = 0.5;
+      }
+    } else {
+      if (window.isKeyDown.key_ArrowLeft) {
+        this.position.x -= this.speed;
+      }
+      if (window.isKeyDown.key_ArrowRight) {
+        this.position.x += this.speed;
+      }
+      if (window.isKeyDown.key_ArrowUp) {
+        this.position.y -= this.speed;
+      }
+      if (window.isKeyDown.key_ArrowDown) {
+        this.position.y += this.speed;
       }
     }
 

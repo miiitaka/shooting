@@ -1,7 +1,12 @@
 (() => {
   /**
    * キーの押下状態を調べるためのオブジェクト
+   * このオブジェクトはプロジェクトのどこからでも参照できるように
+   * windowオブジェクトのカスタムプロパティとして設定する
+   * @global
+   * @type {object}
    */
+  window.isKeyDown = {};
 
   /**
    * canvasの幅
@@ -86,21 +91,10 @@
   */
   const eventSetting = () => {
     window.addEventListener("keydown", (event) => {
-      let move = 10;
-      switch (event.key) {
-        case "ArrowLeft":
-          viper.position.x -= move;
-          break;
-        case "ArrowRight":
-          viper.position.x += move;
-          break;
-        case "ArrowUp":
-          viper.position.y -= move;
-          break;
-        case "ArrowDown":
-          viper.position.y += move / 2;
-          break;
-      }
+      isKeyDown[`key_${event.key}`] = true;
+    }, false);
+    window.addEventListener("keyup", (event) => {
+      isKeyDown[`key_${event.key}`] = false;
     }, false);
   };
 
