@@ -10,9 +10,9 @@ class Character {
    * @param {number} w - 幅
    * @param {number} h - 高さ
    * @param {number} life - キャラクターのライフ（生存フラグを兼ねる）
-   * @param {Image} image - キャラクターの画像
+   * @param {string} imagePath - キャラクターの画像
    */
-  constructor(ctx, x, y, w, h, life, image) {
+  constructor(ctx, x, y, w, h, life, imagePath) {
     /**
      * @type {CanvasRenderingContext2D}
      */
@@ -26,12 +26,12 @@ class Character {
     /**
      * @type {number}
      */
-    this.w = w;
+    this.width = w;
 
     /**
      * @type {number}
      */
-    this.y = y;
+    this.height = h;
 
     /**
      * @type {number}
@@ -39,19 +39,32 @@ class Character {
     this.life = life;
 
     /**
+     * @type {boolean}
+     */
+    this.ready = false;
+    /**
+
      * @type {Image}
      */
-    this.image = image;
+    this.image = new Image();
+    this.image.addEventListener("load", () => {
+      this.ready = true;
+    }, false);
+    this.image.src = imagePath
   }
 
   /**
    * キャラクターを描画する
    */
   draw() {
+    let offsetX = this.width / 2;
+    let offsetY = this.height / 2;
     this.ctx.drawImage(
       this.image,
-      this.position.x,
-      this.position.y
+      this.position.x - offsetX,
+      this.position.y- offsetY,
+      this.width,
+      this.height
     );
   }
 }

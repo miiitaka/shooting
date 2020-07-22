@@ -9,11 +9,11 @@ class Shot extends Character {
    * @param {number} y - Y座標
    * @param {number} w - 幅
    * @param {number} h - 高さ
-   * @param {Image} image - キャラクターの画像
+   * @param {Image} imagePath - キャラクターの画像
    */
-  constructor(ctx, x, y, image) {
+  constructor(ctx, x, y, w, h, imagePath) {
     // 親クラスのコンストラクタ呼出
-    super(ctx, x, y, w, h, 0, image);
+    super(ctx, x, y, w, h, 0, imagePath);
 
     /**
   　 * viperの移動スピード
@@ -45,23 +45,3 @@ class Shot extends Character {
     this.draw();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

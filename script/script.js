@@ -21,28 +21,28 @@
   const CANVAS_HEIGHT = 480;
 
   /**
+   * shotの最大個数
+   * @type {number}
+   */
+  const SHOT_MAX_COUNT = 10;
+
+  /**
    * canvas2DAPIをラップしたユーティリティクラス
    * @type {Canvas2DUtility}
    */
-  let util;
+  let util = null;
 
   /**
    * 描画対象となるCanvasElement
    * @type {HTMLCanvasElement}
    */
-  let canvas;
+  let canvas = null;
 
   /**
    * Canvas2DAPIのコンテキスト
    * @type {CanvasRenderingContext2D}
    */
-  let ctx;
-
-  /**
-   * イメージのインスタンス
-   * @type {image}
-   */
-  let image;
+  let ctx = null;
 
   /**
    * 実行開始時のタイムスタンプ
@@ -57,13 +57,19 @@
   let viper = null;
 
   /**
+   * ショットのインスタンスを格納する配列
+   * @type {Array<Shot>}
+   */
+  let shotArray = [];
+
+  /**
    * Canvas & Context initialize.
    */
   const initialize = () => {
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
 
-    viper = new Viper(ctx, 0, 0, image);
+    viper = new Viper(ctx, 0, 0, 64, 64, "./image/viper.png");
 
     viper.setComing(
       CANVAS_WIDTH / 2,
@@ -71,6 +77,11 @@
       CANVAS_WIDTH / 2,
       CANVAS_HEIGHT - 100
     );
+
+    for (let i = 0; i < SHOT_MAX_COUNT; ++i) {
+      shotArray[i] = new Shot(ctx, 0, 0, 32, 32, "./image/viper_shot.png");
+    }
+    viper.setShotArray(shotArray);
   };
 
   /**

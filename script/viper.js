@@ -9,11 +9,11 @@ class Viper extends Character {
    * @param {number} y - Y座標
    * @param {number} w - 幅
    * @param {number} h - 高さ
-   * @param {Image} image - キャラクターの画像
+   * @param {string} imagePath - キャラクターの画像
    */
-  constructor(ctx, x, y, w, h, image) {
+  constructor(ctx, x, y, w, h, imagePath) {
     // 親クラスのコンストラクタ呼出
-    super(ctx, x, y, w, h, 0, image);
+    super(ctx, x, y, w, h, 0, imagePath);
 
     /**
   　 * viperの移動スピード
@@ -36,7 +36,18 @@ class Viper extends Character {
     /**
      * @type {Position}
      */
+    this.comingStartPosition = null;
+
+    /**
+     * @type {Position}
+     */
     this.comingEndPosition = null;
+
+    /**
+     * 自身が持つショットインスタンスの配列
+     * @type {Array<Shot>}
+     */
+    this.shotArray = null;
   }
 
   /**
@@ -57,6 +68,14 @@ class Viper extends Character {
     this.comingStartPosition = new Position(startX, startY);
     // 登場終了時の座標を設定する
     this.comingEndPosition = new Position(endX, endY);
+  }
+
+  /**
+   * ショットを設定する
+   * @param {Array<Shot>} shotArray - 自身に設定するショットの配列
+   */
+  setShotArray(shotArray) {
+    this.shotArray = shotArray;
   }
 
   /**
@@ -97,29 +116,18 @@ class Viper extends Character {
       let tx = Math.min(Math.max(this.position.x, 0), canvasWidth);
       let ty = Math.min(Math.max(this.position.y, 0), canvasHeight);
       this.position.set(tx, ty);
+
+      if (window.isKeyDown.key_z) {
+        for (let i = 0; i < this.shotArray.length; ++i) {
+          if (this.shotArray[i].life <= 0) {
+            this.shotArray[i].set(this.position.x, this.position.y);
+            break;
+          }
+        }
+      }
     }
 
     this.draw();
     this.ctx.globalAlpha = 1;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
