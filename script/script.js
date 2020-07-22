@@ -85,6 +85,25 @@
   };
 
   /**
+   * インスタンスの準備が完了しているか確認する
+   */
+  const loadCheck = () => {
+    let ready = true;
+    ready = ready && viper.ready;
+    shotArray.map((v) => {
+      ready = ready && v.ready;
+    });
+
+    if (ready) {
+      eventSetting();
+      startTime = Date.now();
+      render();
+    } else {
+      setTimeout(loadCheck, 100);
+    }
+  }
+
+  /**
    * Rendering function.
    */
   const render = () => {
@@ -93,6 +112,10 @@
     let nowTime = (Date.now() - startTime) / 1000;
 
     viper.update();
+
+    shotArray.map((v) => {
+      v.update();
+    });
 
     requestAnimationFrame(render);
   };

@@ -22,6 +22,18 @@ class Viper extends Character {
     this.speed = 3;
 
     /**
+  　 * ショットを撃った後のチェック用カウンター
+     * @type {number}
+     */
+    this.shotCheckCounter = 0;
+
+    /**
+  　 * ショットを撃つことができる間隔（フレーム数）
+     * @type {number}
+     */
+    this.shotInterval = 10;
+
+    /**
   　 * viperの登場フラグ
      * @type {boolean}
      */
@@ -118,13 +130,17 @@ class Viper extends Character {
       this.position.set(tx, ty);
 
       if (window.isKeyDown.key_z) {
-        for (let i = 0; i < this.shotArray.length; ++i) {
-          if (this.shotArray[i].life <= 0) {
-            this.shotArray[i].set(this.position.x, this.position.y);
-            break;
+        if (this.shotCheckCounter >= 0) {
+          for (let i = 0; i < this.shotArray.length; ++i) {
+            if (this.shotArray[i].life <= 0) {
+              this.shotArray[i].set(this.position.x, this.position.y);
+              this.shotCheckCounter = -this.shotInterval;
+              break;
+            }
           }
         }
       }
+      ++this.shotCheckCounter;
     }
 
     this.draw();
