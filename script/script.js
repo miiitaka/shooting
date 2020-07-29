@@ -27,6 +27,12 @@
   const SHOT_MAX_COUNT = 10;
 
   /**
+   * 敵キャラクターのインスタンス数
+   * @type {number}
+   */
+  const ENEMY_MAX_COUNT = 10;
+
+  /**
    * canvas2DAPIをラップしたユーティリティクラス
    * @type {Canvas2DUtility}
    */
@@ -63,6 +69,18 @@
   let shotArray = [];
 
   /**
+   * シングルショットのインスタンスを格納する配列
+   * @type {Array<Shot>}
+   */
+  let singleShotArray = [];
+
+  /**
+   * 敵キャラクターのインスタンスを格納する配列
+   * @type {Array<Enemy>}
+   */
+  let enemyArray = [];
+
+  /**
    * Canvas & Context initialize.
    */
   const initialize = () => {
@@ -80,8 +98,14 @@
 
     for (let i = 0; i < SHOT_MAX_COUNT; ++i) {
       shotArray[i] = new Shot(ctx, 0, 0, 32, 32, "./image/viper_shot.png");
+      singleShotArray[i * 2] = new Shot(ctx, 0, 0, 32, 32, "./image/viper_single_shot.png");
+      singleShotArray[i * 2 + 1] = new Shot(ctx, 0, 0, 32, 32, "./image/viper_single_shot.png");
     }
-    viper.setShotArray(shotArray);
+    viper.setShotArray(shotArray, singleShotArray);
+
+    for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+      enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
+    }
   };
 
   /**
@@ -91,6 +115,12 @@
     let ready = true;
     ready = ready && viper.ready;
     shotArray.map((v) => {
+      ready = ready && v.ready;
+    });
+    singleShotArray.map((v) => {
+      ready = ready && v.ready;
+    });
+    enemyArray.map((v) => {
       ready = ready && v.ready;
     });
 
@@ -114,6 +144,14 @@
     viper.update();
 
     shotArray.map((v) => {
+      v.update();
+    });
+
+    singleShotArray.map((v) => {
+      v.update();
+    });
+
+    enemyArray.map((v) => {
       v.update();
     });
 
