@@ -1,7 +1,7 @@
 /**
- * Shotクラス
+ * Enemyクラス
  */
-class Shot extends Character {
+class Enemy extends Character {
   /**
    * @constructor
    * @param {CanvasRenderingContext2D} ctx - 描画などに利用する2Dコンテキスト
@@ -16,34 +16,21 @@ class Shot extends Character {
     super(ctx, x, y, w, h, 0, imagePath);
 
     /**
-  　 * viperの移動スピード
+  　 * 自身の移動スピード
      * @type {number}
      */
-    this.speed = 7;
-    /**
-  　 * ショットの進行方向
-     * @type {Position}
-     */
-    this.vector = new Position(0, -1);
+    this.speed = 3;
   }
 
   /**
-   * ショットを配置する
+   * 敵を配置する
    * @param {number} x - 配置するX座標
    * @param {number} y - 配置するY座標
+   * @param {number} [life = 1] - 設定するライフ
    */
-  set(x ,y) {
+  set(x ,y, life = 1) {
     this.position.set(x, y);
-    this.life = 1;
-  }
-
-  /**
-   * ショットを進行方向を設定する
-   * @param {number} x - X方向の移動量
-   * @param {number} y - Y方向の移動量
-   */
-  setVector(x ,y) {
-    this.vector.set(x, y);
+    this.life = life;
   }
 
   /**
@@ -52,7 +39,7 @@ class Shot extends Character {
   update() {
     if (this.life <= 0) { return; }
 
-    if (this.position.y + this.height < 0) {
+    if (this.position.y - this.height > this.ctx.canvas.height) {
       this.life = 0;
     }
     this.position.x += this.vector.x * this.speed;

@@ -51,6 +51,11 @@ class Character {
       this.ready = true;
     }, false);
     this.image.src = imagePath
+
+    /**
+     * @type {number}
+     */
+    this.angle = 270 * Math.PI / 180;
   }
 
   /**
@@ -63,6 +68,37 @@ class Character {
       this.image,
       this.position.x - offsetX,
       this.position.y- offsetY,
+      this.width,
+      this.height
+    );
+  }
+
+  /**
+   * 進行方向を角度を元に設定する
+   * @param {number} angle - 回転量（ラジアン）
+   */
+  setVectorFromAngle(angle) {
+    this.angle = angle;
+    let sin = Math.sin(angle);
+    let cos = Math.cos(angle);
+    this.vector.set(cos, sin);
+  }
+
+  /**
+   * 自身の回転量を元に座標系を回転させる
+   */
+  rotationDraw() {
+    this.ctx.save();
+    this.ctx.translate(this.position.x, this.position.y);
+    this.ctx.rotate(this.angle - Math.PI * 1.5);
+
+    let offsetX = this.width / 2;
+    let offsetY = this.height / 2;
+
+    this.ctx.drawImage(
+      this.image,
+      -offsetX,
+      -offsetY,
       this.width,
       this.height
     );

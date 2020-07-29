@@ -60,6 +60,12 @@ class Viper extends Character {
      * @type {Array<Shot>}
      */
     this.shotArray = null;
+
+    /**
+     * 自身が持つシングルショットインスタンスの配列
+     * @type {Array<Shot>}
+     */
+    this.singleShotArray = null;
   }
 
   /**
@@ -85,9 +91,11 @@ class Viper extends Character {
   /**
    * ショットを設定する
    * @param {Array<Shot>} shotArray - 自身に設定するショットの配列
+   * @param {Array<Shot>} singleShotArray - 自身に設定するシングルショットの配列
    */
-  setShotArray(shotArray) {
+  setShotArray(shotArray, singleShotArray) {
     this.shotArray = shotArray;
+    this.singleShotArray = singleShotArray;
   }
 
   /**
@@ -134,6 +142,18 @@ class Viper extends Character {
           for (let i = 0; i < this.shotArray.length; ++i) {
             if (this.shotArray[i].life <= 0) {
               this.shotArray[i].set(this.position.x, this.position.y);
+              this.shotCheckCounter = -this.shotInterval;
+              break;
+            }
+          }
+          for (let i = 0; i < this.singleShotArray.length; i += 2) {
+            if (this.singleShotArray[i].life <= 0 && this.singleShotArray[i + 1].life <= 0) {
+              let radCW = 280 * Math.PI / 180;
+              let radCCW = 260 * Math.PI / 180;
+              this.singleShotArray[i].set(this.position.x, this.position.y);
+              this.singleShotArray[i].setVectorFromAngle(radCW);
+              this.singleShotArray[i + 1].set(this.position.x, this.position.y);
+              this.singleShotArray[i + 1].setVectorFromAngle(radCCW);
               this.shotCheckCounter = -this.shotInterval;
               break;
             }
