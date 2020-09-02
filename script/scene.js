@@ -42,7 +42,7 @@ class SceneManager {
    * @param {string} name - アクティブにするシーンの名前
    */
   use(name) {
-    if (!this.scene.hasOwnProperty(name)) {
+    if (this.scene.hasOwnProperty(name) !== true) {
       return;
     }
     this.activeScene = this.scene[name];
