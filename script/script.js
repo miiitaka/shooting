@@ -63,6 +63,12 @@
   let viper = null;
 
   /**
+   * シーンマネージャーのインスタンス
+   * @type {SceneManager}
+   */
+  let scene = null;
+
+  /**
    * ショットのインスタンスを格納する配列
    * @type {Array<Shot>}
    */
@@ -87,6 +93,7 @@
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
 
+    scene = new SceneManager();
     viper = new Viper(ctx, 0, 0, 64, 64, "./image/viper.png");
 
     viper.setComing(
@@ -126,6 +133,7 @@
 
     if (ready) {
       eventSetting();
+      sceneSetting();
       startTime = Date.now();
       render();
     } else {
@@ -141,6 +149,7 @@
     util.drawRect(0, 0, canvas.width, canvas.height, "#eeeeee");
     let nowTime = (Date.now() - startTime) / 1000;
 
+    scene.update();
     viper.update();
 
     shotArray.map((v) => {
@@ -183,7 +192,7 @@
     scene.add("invade", (time) => {
       if (scene.frame !== 0) { return; }
 
-      for (let i = 0; i < ENEMY_MAX_COUNT; i++) {
+      for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
         if (enemyArray[i].life <= 0) {
           let e = enemyArray[i];
           e.set(CANVAS_WIDTH / 2, -e.height);
@@ -200,12 +209,7 @@
     canvas = util.canvas;
     ctx = util.context;
 
-    util.imageLoader("./image/viper.png", (loadImage) => {
-      image = loadImage;
-      initialize();
-      eventSetting();
-      startTime = Date.now();
-      render();
-    });
+    initialize();
+    loadCheck()
   }, false);
 })();
