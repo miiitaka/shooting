@@ -170,6 +170,31 @@
     }, false);
   };
 
+  /**
+   * Scene Event Settings.
+   */
+  const sceneSetting = () => {
+    scene.add("intro", (time) => {
+      if (time > 2) {
+        scene.use("invade");
+      }
+    });
+
+    scene.add("invade", (time) => {
+      if (scene.frame !== 0) { return; }
+
+      for (let i = 0; i < ENEMY_MAX_COUNT; i++) {
+        if (enemyArray[i].life <= 0) {
+          let e = enemyArray[i];
+          e.set(CANVAS_WIDTH / 2, -e.height);
+          e.setVector(0, 1);
+          break;
+        }
+      }
+    });
+    scene.use("intro");
+  };
+
   window.addEventListener("load", () => {
     util = new Canvas2DUtility(document.body.querySelector("#main_canvas"));
     canvas = util.canvas;
