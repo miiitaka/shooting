@@ -47,6 +47,16 @@ class Shot extends Character {
   }
 
   /**
+   * ショットのスピードを設定する
+   * @param {number} [speed] - 設定するスピード
+   */
+  setSpeed(speed) {
+    if (speed !== null && speed > 0) {
+      this.speed = speed;
+    }
+  }
+
+  /**
    * キャラクターの状態を更新し描画を行う
    */
   update() {

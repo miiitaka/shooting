@@ -33,6 +33,12 @@
   const ENEMY_MAX_COUNT = 10;
 
   /**
+   * 敵キャラクターのショットの最大個数
+   * @type {number}
+   */
+  const ENEMY_SHOT_MAX_COUNT = 50;
+
+  /**
    * canvas2DAPIをラップしたユーティリティクラス
    * @type {Canvas2DUtility}
    */
@@ -87,6 +93,12 @@
   let enemyArray = [];
 
   /**
+   * 敵キャラクターのショットのインスタンスを格納する配列
+   * @type {Array<Enemy>}
+   */
+  let enemyShotArray = [];
+
+  /**
    * Canvas & Context initialize.
    */
   const initialize = () => {
@@ -110,8 +122,13 @@
     }
     viper.setShotArray(shotArray, singleShotArray);
 
+    for (let i = 0; i < ENEMY_SHOT_MAX_COUNT; ++i) {
+      enemyShotArray[i] = new Shot(ctx, 0, 0, 32, 32, "./image/enemy_shot.png");
+    }
+
     for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
       enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
+      enemyArray[i].setShotArray(enemyShotArray);
     }
   };
 
@@ -128,6 +145,9 @@
       ready = ready && v.ready;
     });
     enemyArray.map((v) => {
+      ready = ready && v.ready;
+    });
+    enemyShotArray.map((v) => {
       ready = ready && v.ready;
     });
 
@@ -164,6 +184,10 @@
       v.update();
     });
 
+    enemyShotArray.map((v) => {
+      v.update();
+    });
+
     requestAnimationFrame(render);
   };
 
@@ -189,16 +213,19 @@
       }
     });
 
-    scene.add("invade", (time) => {
-      if (scene.frame !== 0) { return; }
-
-      for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
-        if (enemyArray[i].life <= 0) {
-          let e = enemyArray[i];
-          e.set(CANVAS_WIDTH / 2, -e.height);
-          e.setVector(0, 1);
-          break;
+    scene.add("invade", () => {
+      if (scene.frame === 0) {
+        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+          if (enemyArray[i].life <= 0) {
+            let e = enemyArray[i];
+            e.set(CANVAS_WIDTH / 2, -e.height);
+            e.setVector(0, 1);
+            break;
+          }
         }
+      }
+      if (scene.frame === 100) {
+        scene.use("invade");
       }
     });
     scene.use("intro");

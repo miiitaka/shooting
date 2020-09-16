@@ -24,6 +24,11 @@ class Character {
     this.position = new Position(x, y);
 
     /**
+     * @type {Position}
+     */
+    this.vector = new Position(0, -1);
+
+    /**
      * @type {number}
      */
     this.width = w;
@@ -71,6 +76,15 @@ class Character {
       this.width,
       this.height
     );
+  }
+
+  /**
+   * 進行方向を設定する
+   * @param {number} x - X方向の移動量
+   * @param {number} y - Y方向の移動量
+   */
+  setVector(x, y) {
+    this.vector.set(x, y);
   }
 
   /**
