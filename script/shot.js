@@ -16,10 +16,20 @@ class Shot extends Character {
     super(ctx, x, y, w, h, 0, imagePath);
 
     /**
-  　 * viperの移動スピード
+  　 * 自身の移動スピード
      * @type {number}
      */
     this.speed = 7;
+    /**
+  　 * 自身の攻撃力
+     * @type {number}
+     */
+    this.power = 1;
+    /**
+  　 * 自身と衝突判定を取る対象を格納する
+     * @type {Array<Character>}
+     */
+    this.targetArray = [];
     /**
   　 * ショットの進行方向
      * @type {Position}
@@ -57,16 +67,50 @@ class Shot extends Character {
   }
 
   /**
+   * ショットの攻撃力を設定する
+   * @param {number} [power] - 設定する攻撃力
+   */
+  setPower(power) {
+    if (power !== null && power > 0) {
+      this.power = power;
+    }
+  }
+
+  /**
+   * ショットが衝突判定を行う対象を設定する
+   * @param {Array<Character>} [targets] - 衝突判定の対象を含む配列
+   */
+  setTargets(targets) {
+    if (targets !== null && Array.isArray(targets) === true && targets.length > 0) {
+      this.targetArray = targets;
+    }
+  }
+
+  /**
    * キャラクターの状態を更新し描画を行う
    */
   update() {
     if (this.life <= 0) { return; }
 
-    if (this.position.y + this.height < 0) {
+    if (
+      this.position.y + this.height < 0 ||
+      this.position.y - this.height > this.ctx.canvas.height
+    ) {
       this.life = 0;
     }
     this.position.x += this.vector.x * this.speed;
     this.position.y += this.vector.y * this.speed;
+
+    this.targetArray.map((v) => {
+      if (this.life <= 0 || v.life <= 0) { return; }
+
+      let dist = this.position.distance(v.position);
+      if (dist <= (this.width + v.width) / 4) {
+        v.life -= this.power;
+        this.life = 0;
+      }
+    });
+
     this.draw();
   }
 }

@@ -30,4 +30,14 @@ class Position {
     if (x !== null) { this.x = x; }
     if (y !== null) { this.y = y; }
   }
+
+  /**
+   * 対象をPositionクラスのインスタンスとの距離を返す
+   * @param {Position} target - 距離を測る対象
+   */
+  distance(target) {
+    let x = this.x - target.x;
+    let y = this.y - target.y;
+    return Math.sqrt(x * x + y * y);
+  }
 }

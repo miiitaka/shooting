@@ -130,6 +130,12 @@
       enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
       enemyArray[i].setShotArray(enemyShotArray);
     }
+
+    for (let i = 0; i < SHOT_MAX_COUNT; ++i) {
+      shotArray[i].setTargets(enemyArray);
+      singleShotArray[i * 2].setTargets(enemyArray);
+      singleShotArray[i * 2 + 1].setTargets(enemyArray);
+    }
   };
 
   /**
@@ -218,7 +224,7 @@
         for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
           if (enemyArray[i].life <= 0) {
             let e = enemyArray[i];
-            e.set(CANVAS_WIDTH / 2, -e.height);
+            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
             e.setVector(0, 1);
             break;
           }
