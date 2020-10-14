@@ -33,6 +33,12 @@
   const ENEMY_MAX_COUNT = 10;
 
   /**
+   * 爆発エフェクトのインスタンス数
+   * @type {number}
+   */
+  const EXPLOSION_MAX_COUNT = 10;
+
+  /**
    * 敵キャラクターのショットの最大個数
    * @type {number}
    */
@@ -93,6 +99,12 @@
   let enemyArray = [];
 
   /**
+   * 爆発エフェクトのインスタンスを格納する配列
+   * @type {Array<Enemy>}
+   */
+  let explosionArray = [];
+
+  /**
    * 敵キャラクターのショットのインスタンスを格納する配列
    * @type {Array<Enemy>}
    */
@@ -131,10 +143,17 @@
       enemyArray[i].setShotArray(enemyShotArray);
     }
 
+    for (let i = 0; i < EXPLOSION_MAX_COUNT; ++i) {
+      explosionArray[i] = new Explosion(ctx, 50, 15, 30, 0.25);
+    }
+
     for (let i = 0; i < SHOT_MAX_COUNT; ++i) {
       shotArray[i].setTargets(enemyArray);
       singleShotArray[i * 2].setTargets(enemyArray);
       singleShotArray[i * 2 + 1].setTargets(enemyArray);
+      shotArray[i].setExplosions(explosionArray);
+      singleShotArray[i * 2].setExplosions(explosionArray);
+      singleShotArray[i * 2 + 1].setExplosions(explosionArray);
     }
   };
 
@@ -191,6 +210,10 @@
     });
 
     enemyShotArray.map((v) => {
+      v.update();
+    });
+
+    explosionArray.map((v) => {
       v.update();
     });
 
