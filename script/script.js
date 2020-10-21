@@ -9,6 +9,15 @@
   window.isKeyDown = {};
 
   /**
+   * スコアを格納する
+   * このオブジェクトはプログラムのどこからでも参照できるように
+   * windowオブジェクトのカスタムプロパティとして設定する
+   * @global
+   * @type {number}
+   */
+  window.gameScore = 0;
+
+  /**
    * canvasの幅
    * @type {number}
    */
@@ -202,6 +211,9 @@
     util.drawRect(0, 0, canvas.width, canvas.height, "#eeeeee");
     let nowTime = (Date.now() - startTime) / 1000;
 
+    ctx.font = "bold 24px monospace";
+    util.drawText(zeroPadding(gameScore, 5), 30, 50, "#111111");
+
     scene.update();
     viper.update();
 
@@ -284,6 +296,7 @@
 
       if (restart) {
         restart = false;
+        gameScore = 0;
         viper.setComing(
           CANVAS_WIDTH / 2,
           CANVAS_HEIGHT + 50,
@@ -295,6 +308,17 @@
     });
     scene.use("intro");
   };
+
+  /**
+   * 数値の不足した桁数をゼロで埋めた文字列を返す
+   * @param {number} number - 数値
+   * @param {number} count - 桁数（2桁以上）
+   */
+ const zeroPadding = (number, count) => {
+   let zeroArray = new Array(count);
+   let zeroString = zeroArray.join("0") + number;
+   return zeroString.slice(-count);
+ };
 
   window.addEventListener("load", () => {
     util = new Canvas2DUtility(document.body.querySelector("#main_canvas"));
