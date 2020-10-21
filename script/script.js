@@ -9,6 +9,15 @@
   window.isKeyDown = {};
 
   /**
+   * スコアを格納する
+   * このオブジェクトはプログラムのどこからでも参照できるように
+   * windowオブジェクトのカスタムプロパティとして設定する
+   * @global
+   * @type {number}
+   */
+  window.gameScore = 0;
+
+  /**
    * canvasの幅
    * @type {number}
    */
@@ -111,6 +120,12 @@
   let enemyShotArray = [];
 
   /**
+   * 再スタートするためのフラグ
+   * @type {boolean}
+   */
+  let restart = false;
+
+  /**
    * Canvas & Context initialize.
    */
   const initialize = () => {
@@ -134,10 +149,6 @@
     }
     viper.setShotArray(shotArray, singleShotArray);
 
-    for (let i = 0; i < ENEMY_SHOT_MAX_COUNT; ++i) {
-      enemyShotArray[i] = new Shot(ctx, 0, 0, 32, 32, "./image/enemy_shot.png");
-    }
-
     for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
       enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
       enemyArray[i].setShotArray(enemyShotArray);
@@ -145,6 +156,12 @@
 
     for (let i = 0; i < EXPLOSION_MAX_COUNT; ++i) {
       explosionArray[i] = new Explosion(ctx, 50, 15, 30, 0.25);
+    }
+
+    for (let i = 0; i < ENEMY_SHOT_MAX_COUNT; ++i) {
+      enemyShotArray[i] = new Shot(ctx, 0, 0, 32, 32, "./image/enemy_shot.png");
+      enemyShotArray[i].setTargets([viper]);
+      enemyShotArray[i].setExplosions(explosionArray);
     }
 
     for (let i = 0; i < SHOT_MAX_COUNT; ++i) {
@@ -194,6 +211,9 @@
     util.drawRect(0, 0, canvas.width, canvas.height, "#eeeeee");
     let nowTime = (Date.now() - startTime) / 1000;
 
+    ctx.font = "bold 24px monospace";
+    util.drawText(zeroPadding(gameScore, 5), 30, 50, "#111111");
+
     scene.update();
     viper.update();
 
@@ -226,6 +246,11 @@
   const eventSetting = () => {
     window.addEventListener("keydown", (event) => {
       isKeyDown[`key_${event.key}`] = true;
+      if (event.key === "Enter") {
+        if (viper.life <= 0) {
+          restart = true;
+        }
+      }
     }, false);
     window.addEventListener("keyup", (event) => {
       isKeyDown[`key_${event.key}`] = false;
@@ -256,9 +281,44 @@
       if (scene.frame === 100) {
         scene.use("invade");
       }
+      if (viper.life <= 0) {
+        scene.use("gameover");
+      }
+    });
+    scene.add("gameover", (time) => {
+      let
+        textWidth = CANVAS_WIDTH / 2,
+        loopWidth = CANVAS_WIDTH + textWidth,
+        x = CANVAS_WIDTH - (scene.frame * 2) % loopWidth;
+
+      ctx.font = "bold 72px sans-serif";
+      util.drawText("GAME OVER", x, CANVAS_HEIGHT / 2, "#ff0000", textWidth);
+
+      if (restart) {
+        restart = false;
+        gameScore = 0;
+        viper.setComing(
+          CANVAS_WIDTH / 2,
+          CANVAS_HEIGHT + 50,
+          CANVAS_WIDTH / 2,
+          CANVAS_HEIGHT - 100
+        );
+        scene.use("intro");
+      }
     });
     scene.use("intro");
   };
+
+  /**
+   * 数値の不足した桁数をゼロで埋めた文字列を返す
+   * @param {number} number - 数値
+   * @param {number} count - 桁数（2桁以上）
+   */
+ const zeroPadding = (number, count) => {
+   let zeroArray = new Array(count);
+   let zeroString = zeroArray.join("0") + number;
+   return zeroString.slice(-count);
+ };
 
   window.addEventListener("load", () => {
     util = new Canvas2DUtility(document.body.querySelector("#main_canvas"));

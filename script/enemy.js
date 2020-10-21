@@ -38,6 +38,12 @@ class Enemy extends Character {
      * @type {Array}<Shot>
      */
     this.shotArray = null;
+
+    /**
+  　 * 自身が攻撃の対象とするCharacter由来のインスタンス
+     * @type {Character}
+     */
+    this.attackTarget = null;
   }
 
   /**

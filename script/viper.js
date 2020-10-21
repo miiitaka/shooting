@@ -13,7 +13,7 @@ class Viper extends Character {
    */
   constructor(ctx, x, y, w, h, imagePath) {
     // 親クラスのコンストラクタ呼出
-    super(ctx, x, y, w, h, 0, imagePath);
+    super(ctx, x, y, w, h, 1, imagePath);
 
     /**
   　 * viperの移動スピード
@@ -76,6 +76,8 @@ class Viper extends Character {
    * @param {number} endY - 登場終了時のY座標
    */
   setComing(startX, startY, endX, endY) {
+    // 自機キャラクターのライフを1に設定する
+    this.life = 1;
     // 登場中のフラグを立てる
     this.isComing = true;
     // 登場開始時のタイムスタンプを取得する
@@ -102,6 +104,8 @@ class Viper extends Character {
    * キャラクターの状態を更新し描画を行う
    */
   update() {
+    if (this.life <= 0) { return; }
+
     let justTime = Date.now();
 
     if (this.isComing) {
