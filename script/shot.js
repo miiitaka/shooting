@@ -116,6 +116,11 @@ class Shot extends Character {
 
       let dist = this.position.distance(v.position);
       if (dist <= (this.width + v.width) / 4) {
+        if (v instanceof Viper) {
+          if (v.isComing) {
+            return;
+          }
+        }
         v.life -= this.power;
         if (v.life <= 0) {
           for (let i = 0; i < this.explosionArray.length; ++i) {
