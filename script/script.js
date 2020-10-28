@@ -42,6 +42,18 @@
   const ENEMY_MAX_COUNT = 10;
 
   /**
+   * 敵キャラクター（小）のインスタンス数
+   * @type {number}
+   */
+  const ENEMY_SMALL_MAX_COUNT = 20;
+
+  /**
+   * 敵キャラクター（大）のインスタンス数
+   * @type {number}
+   */
+  const ENEMY_LARGE_MAX_COUNT = 5;
+
+  /**
    * 爆発エフェクトのインスタンス数
    * @type {number}
    */
@@ -149,9 +161,16 @@
     }
     viper.setShotArray(shotArray, singleShotArray);
 
-    for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+    for (let i = 0; i < ENEMY_SMALL_MAX_COUNT; ++i) {
       enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
       enemyArray[i].setShotArray(enemyShotArray);
+      enemyArray[i].setAttackTarget(viper);
+    }
+
+    for (let i = 0; i < ENEMY_LARGE_MAX_COUNT; ++i) {
+      enemyArray[ENEMY_SMALL_MAX_COUNT + i] = new Enemy(ctx, 0, 0, 64, 64, "./image/enemy_large.png");
+      enemyArray[ENEMY_SMALL_MAX_COUNT + i].setShotArray(enemyShotArray);
+      enemyArray[ENEMY_SMALL_MAX_COUNT + i].setAttackTarget(viper);
     }
 
     for (let i = 0; i < EXPLOSION_MAX_COUNT; ++i) {
@@ -262,12 +281,12 @@
    */
   const sceneSetting = () => {
     scene.add("intro", (time) => {
-      if (time > 2) {
-        scene.use("invade");
+      if (time > 3) {
+        scene.use("invade_default_type");
       }
     });
 
-    scene.add("invade", () => {
+    scene.add("invade_default_type", (time) => {
       if (scene.frame === 0) {
         for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
           if (enemyArray[i].life <= 0) {
@@ -278,8 +297,52 @@
           }
         }
       }
-      if (scene.frame === 100) {
-        scene.use("invade");
+      if (scene.frame === 270) {
+        scene.use("blank");
+      }
+      if (viper.life <= 0) {
+        scene.use("gameover");
+      }
+    });
+    scene.add("blank", (time) => {
+      if (scene.frame === 150) {
+        scene.use("invade_wave_move_type");
+      }
+      if (viper.life <= 0) {
+        scene.use("gameover");
+      }
+    });
+    scene.add("invade_wave_move_type", (time) => {
+      if (scene.frame === 0) {
+        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+          if (enemyArray[i].life <= 0) {
+            let e = enemyArray[i];
+            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
+            e.setVector(0, 1);
+            break;
+          }
+        }
+      }
+      if (scene.frame === 450) {
+        scene.use("invade_large_type");
+      }
+      if (viper.life <= 0) {
+        scene.use("gameover");
+      }
+    });
+    scene.add("invade_large_type", (time) => {
+      if (scene.frame === 0) {
+        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+          if (enemyArray[i].life <= 0) {
+            let e = enemyArray[i];
+            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
+            e.setVector(0, 1);
+            break;
+          }
+        }
+      }
+      if (scene.frame === 500) {
+        scene.use("intro");
       }
       if (viper.life <= 0) {
         scene.use("gameover");

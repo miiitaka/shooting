@@ -3,6 +3,27 @@
  */
 class Position {
   /**
+   * @static
+   * @param {number} x - X要素
+   * @param {number} y - Y要素
+   * @return {number}
+   */
+  static calcLength(x, y) {
+    return Math.sqrt(x * x, y * y);
+  }
+
+  /**
+   * @static
+   * @param {number} x - X要素
+   * @param {number} y - Y要素
+   * @return {Position}
+   */
+  static calcNormal(x, y) {
+    let len = Position.calcLength(x, y);
+    return new Position(x / len, y / len);
+  }
+
+  /**
    * @constructor
    * @param {number} x - X座標
    * @param {number} y - Y座標

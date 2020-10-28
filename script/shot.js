@@ -35,16 +35,25 @@ class Shot extends Character {
      * @type {Position}
      */
     this.vector = new Position(0, -1);
+    /**
+  　 * 爆発エフェクトのインスタンスを格納する
+     * @type {Array<Explosion>}
+     */
+    this.explosionArray = [];
   }
 
   /**
    * ショットを配置する
    * @param {number} x - 配置するX座標
    * @param {number} y - 配置するY座標
+   * @param {number} speed - 設定するスピード
+   * @param {number} power - 設定する攻撃力
    */
-  set(x ,y) {
+  set(x ,y, speed, power) {
     this.position.set(x, y);
     this.life = 1;
+    this.setSpeed(speed);
+    this.setPower(power);
   }
 
   /**
@@ -103,6 +112,8 @@ class Shot extends Character {
     if (this.life <= 0) { return; }
 
     if (
+      this.position.x + this.width < 0 ||
+      this.position.x - this.width > this.ctx.canvas.width ||
       this.position.y + this.height < 0 ||
       this.position.y - this.height > this.ctx.canvas.height
     ) {
@@ -130,7 +141,11 @@ class Shot extends Character {
             }
           }
           if (v instanceof Enemy) {
-            gameScore = Math.min(gameScore + 100, 99999);
+            let score = 100;
+            if (v.type === "large") {
+              score = 1000;
+            }
+            gameScore = Math.min(gameScore + score, 99999);
           }
         }
         this.life = 0;
