@@ -9,7 +9,7 @@ class Position {
    * @return {number}
    */
   static calcLength(x, y) {
-    return Math.sqrt(x * x, y * y);
+    return Math.sqrt(x * x + y * y);
   }
 
   /**

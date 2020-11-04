@@ -20,7 +20,6 @@ class Enemy extends Character {
      * @type {string}
      */
     this.type = "default";
-    this.type = "wave";
 
     /**
   　 * 自身が出現してからのフレーム数
@@ -57,7 +56,7 @@ class Enemy extends Character {
   set(x ,y, life = 1, type = "default") {
     this.position.set(x, y);
     this.life = life;
-    this.type = "wave";
+    this.type = type;
     this.frame = 0;
   }
 
