@@ -36,12 +36,6 @@
   const SHOT_MAX_COUNT = 10;
 
   /**
-   * 敵キャラクターのインスタンス数
-   * @type {number}
-   */
-  const ENEMY_MAX_COUNT = 10;
-
-  /**
    * 敵キャラクター（小）のインスタンス数
    * @type {number}
    */
@@ -149,7 +143,7 @@
 
     viper.setComing(
       CANVAS_WIDTH / 2,
-      CANVAS_HEIGHT,
+      CANVAS_HEIGHT + 50,
       CANVAS_WIDTH / 2,
       CANVAS_HEIGHT - 100
     );
@@ -162,7 +156,7 @@
     viper.setShotArray(shotArray, singleShotArray);
 
     for (let i = 0; i < ENEMY_SMALL_MAX_COUNT; ++i) {
-      enemyArray[i] = new Enemy(ctx, 0, 0, 32, 32, "./image/enemy_small.png");
+      enemyArray[i] = new Enemy(ctx, 0, 0, 48, 48, "./image/enemy_small.png");
       enemyArray[i].setShotArray(enemyShotArray);
       enemyArray[i].setAttackTarget(viper);
     }
@@ -174,7 +168,7 @@
     }
 
     for (let i = 0; i < EXPLOSION_MAX_COUNT; ++i) {
-      explosionArray[i] = new Explosion(ctx, 50, 15, 30, 0.25);
+      explosionArray[i] = new Explosion(ctx, 100, 15, 40, 1);
     }
 
     for (let i = 0; i < ENEMY_SHOT_MAX_COUNT; ++i) {
@@ -285,14 +279,18 @@
         scene.use("invade_default_type");
       }
     });
-
     scene.add("invade_default_type", (time) => {
-      if (scene.frame === 0) {
-        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+      if (scene.frame % 30 === 0) {
+        for (let i = 0; i < ENEMY_SMALL_MAX_COUNT; ++i) {
           if (enemyArray[i].life <= 0) {
             let e = enemyArray[i];
-            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
-            e.setVector(0, 1);
+            if (scene.frame % 60 === 0) {
+              e.set(-e.width, 30, 2, "default");
+              e.setVectorFromAngle(degreesToRadians(30));
+            } else {
+              e.set(CANVAS_WIDTH + e.width, 30, 2, "default");
+              e.setVectorFromAngle(degreesToRadians(150));
+            }
             break;
           }
         }
@@ -313,12 +311,15 @@
       }
     });
     scene.add("invade_wave_move_type", (time) => {
-      if (scene.frame === 0) {
-        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
+      if (scene.frame % 50 === 0) {
+        for (let i = 0; i < ENEMY_SMALL_MAX_COUNT; ++i) {
           if (enemyArray[i].life <= 0) {
             let e = enemyArray[i];
-            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
-            e.setVector(0, 1);
+            if (scene.frame <= 200) {
+              e.set(CANVAS_WIDTH * 0.2, -e.height, 2, "wave");
+            } else {
+              e.set(CANVAS_WIDTH * 0.8, -e.height, 2, "wave");
+            }
             break;
           }
         }
@@ -331,12 +332,12 @@
       }
     });
     scene.add("invade_large_type", (time) => {
-      if (scene.frame === 0) {
-        for (let i = 0; i < ENEMY_MAX_COUNT; ++i) {
-          if (enemyArray[i].life <= 0) {
-            let e = enemyArray[i];
-            e.set(CANVAS_WIDTH / 2, -e.height, 2, "default");
-            e.setVector(0, 1);
+      if (scene.frame === 100) {
+        let i = ENEMY_SMALL_MAX_COUNT + ENEMY_LARGE_MAX_COUNT;
+        for (let j = ENEMY_SMALL_MAX_COUNT; j < i; ++j) {
+          if (enemyArray[j].life <= 0) {
+            let e = enemyArray[j];
+            e.set(CANVAS_WIDTH / 2, -e.height, 50, "large");
             break;
           }
         }
@@ -370,6 +371,22 @@
       }
     });
     scene.use("intro");
+  };
+
+  /**
+   * 度数法の角度からラジアンを生成する
+   * @param {number} degrees - 度数法の度数
+   */
+  const degreesToRadians = (degrees) => {
+    return Math.PI / 180;
+  };
+
+  /**
+   * 特定の範囲におけるランダムな整数の値を生成する
+   * @param {number} range - 乱数を生成する範囲
+   */
+  const generateRandomInt = (range) => {
+    return Math.floor(Math.random() * range);
   };
 
   /**
