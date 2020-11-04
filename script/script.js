@@ -60,6 +60,24 @@
   const ENEMY_SHOT_MAX_COUNT = 50;
 
   /**
+   * 背景を流れる星の個数
+   * @type {number}
+   */
+  const BACKGROUND_STAR_MAX_COUNT = 100;
+
+  /**
+   * 背景を流れる星の最大サイズ
+   * @type {number}
+   */
+  const BACKGROUND_STAR_MAX_SIZE = 3;
+
+  /**
+   * 背景を流れる星の最大速度
+   * @type {number}
+   */
+  const BACKGROUND_STAR_MAX_SPEED = 4;
+
+  /**
    * canvas2DAPIをラップしたユーティリティクラス
    * @type {Canvas2DUtility}
    */
@@ -126,6 +144,12 @@
   let enemyShotArray = [];
 
   /**
+   * 流れる星のインスタンスを格納する配列
+   * @type {Array<BackgroundStar>}
+   */
+  let backgroundStarArray = [];
+
+  /**
    * 再スタートするためのフラグ
    * @type {boolean}
    */
@@ -185,6 +209,17 @@
       singleShotArray[i * 2].setExplosions(explosionArray);
       singleShotArray[i * 2 + 1].setExplosions(explosionArray);
     }
+
+    for (let i = 0; i < BACKGROUND_STAR_MAX_COUNT; ++i) {
+      let
+        size  = 1 + Math.random() * (BACKGROUND_STAR_MAX_SIZE - 1),
+        speed = 1 + Math.random() * (BACKGROUND_STAR_MAX_SPEED - 1),
+        x = Math.random() * CANVAS_WIDTH,
+        y = Math.random() * CANVAS_HEIGHT;
+
+      backgroundStarArray[i] = new BackgroundStar(ctx, size, speed);
+      backgroundStarArray[i].set(x, y);
+    }
   };
 
   /**
@@ -221,7 +256,7 @@
    */
   const render = () => {
     ctx.globalAlpha = 1;
-    util.drawRect(0, 0, canvas.width, canvas.height, "#eeeeee");
+    util.drawRect(0, 0, canvas.width, canvas.height, "#111122");
     let nowTime = (Date.now() - startTime) / 1000;
 
     ctx.font = "bold 24px monospace";
@@ -247,6 +282,10 @@
     });
 
     explosionArray.map((v) => {
+      v.update();
+    });
+
+    backgroundStarArray.map((v) => {
       v.update();
     });
 
