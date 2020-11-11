@@ -444,7 +444,19 @@
     canvas = util.canvas;
     ctx = util.context;
 
-    initialize();
-    loadCheck()
+    let button = document.body.querySelector("#start_button");
+
+    button.addEventListener("click", () => {
+      this.disabled = true;
+      // let sound = new Sound();
+      // sound.load("./sound/explosion.mp3", (error) => {
+      //   if (error !== null) {
+      //     alert("ファイルの読み込みエラーです");
+      //     return;
+      //   }
+        initialize();
+        loadCheck();
+      // });
+    });
   }, false);
 })();
