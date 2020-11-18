@@ -61,4 +61,37 @@ class Position {
     let y = this.y - target.y;
     return Math.sqrt(x * x + y * y);
   }
+
+  /**
+   * 対象をPositionクラスのインスタンスとの外積を計算する
+   * @param {Position} target - 距離を測る対象
+   */
+  cross(target) {
+    return this.x * target.y - this.y * target.x;
+  }
+
+  /**
+   * 自身を単位化したベクトルを計算して返す
+   */
+  normalize() {
+    let l = Math.sqrt(this.x * this.x + this.y * this.y);
+    if (l === 0) {
+      return new Position(0, 0);
+    }
+    let x = this.x / l;
+    let y = this.y / l;
+    return new Position(x, y);
+  }
+
+
+  /**
+   * 指定されたラジアン分だけ自身を回転させる
+   * @param {number} radian - 回転量
+   */
+  rotate(radian) {
+    let s = Math.sin(radian);
+    let c = Math.cos(radian);
+    this.x = this.x * c + this.y * -s;
+    this.y = this.x * s + this.y * c;
+  }
 }
