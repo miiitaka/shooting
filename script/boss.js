@@ -97,7 +97,7 @@ class Boss extends Character {
     switch (this.mode) {
         case "invade":
           this.position.y += this.speed;
-          if (this.position.y - this.height > 100) {
+          if (this.position.y > 100) {
             this.position.y = 100;
             this.mode = "floating";
             this.frame = 0;
@@ -144,6 +144,23 @@ class Boss extends Character {
        this.shotArray[i].set(this.position.x, this.position.y);
        this.shotArray[i].setSpeed(speed);
        this.shotArray[i].setVector(x, y);
+       break;
+     }
+   }
+  }
+
+  /**
+   * 自身から指定された方向にホーミングショットを放つ
+   * @param {number} [x = 0] - 進行方向ベクトルのX要素
+   * @param {number} [y = 1] - 進行方向ベクトルのY要素
+   * @param {number} [speed = 3] - ショットのスピード
+   */
+  homingFire(x = 0, y = 1, speed = 3) {
+   for (let i = 0; i < this.homingArray.length; ++i) {
+     if (this.homingArray[i].life <= 0) {
+       this.homingArray[i].set(this.position.x, this.position.y);
+       this.homingArray[i].setSpeed(speed);
+       this.homingArray[i].setVector(x, y);
        break;
      }
    }

@@ -116,5 +116,6 @@ class Character {
       this.width,
       this.height
     );
+    this.ctx.restore();
   }
 }

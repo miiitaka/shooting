@@ -1,7 +1,7 @@
 /**
- * Shotクラス
+ * Homingクラス
  */
-class Shot extends Character {
+class Homing extends Shot {
   /**
    * @constructor
    * @param {CanvasRenderingContext2D} ctx - 描画などに利用する2Dコンテキスト
@@ -13,37 +13,13 @@ class Shot extends Character {
    */
   constructor(ctx, x, y, w, h, imagePath) {
     // 親クラスのコンストラクタ呼出
-    super(ctx, x, y, w, h, 0, imagePath);
+    super(ctx, x, y, w, h, imagePath);
 
-    /**
-  　 * 自身の移動スピード
-     * @type {number}
-     */
-    this.speed = 7;
-    /**
-  　 * 自身の攻撃力
-     * @type {number}
-     */
-    this.power = 1;
-    /**
-  　 * 自身と衝突判定を取る対象を格納する
-     * @type {Array<Character>}
-     */
-    this.targetArray = [];
-    /**
-  　 * ショットの進行方向
-     * @type {Position}
-     */
-    this.vector = new Position(0, -1);
-    /**
-  　 * 爆発エフェクトのインスタンスを格納する
-     * @type {Array<Explosion>}
-     */
-    this.explosionArray = [];
+    this.frame = 0;
   }
 
   /**
-   * ショットを配置する
+   * ホーミングショットを配置する
    * @param {number} x - 配置するX座標
    * @param {number} y - 配置するY座標
    * @param {number} speed - 設定するスピード
@@ -54,55 +30,7 @@ class Shot extends Character {
     this.life = 1;
     this.setSpeed(speed);
     this.setPower(power);
-  }
-
-  /**
-   * ショットを進行方向を設定する
-   * @param {number} x - X方向の移動量
-   * @param {number} y - Y方向の移動量
-   */
-  setVector(x ,y) {
-    this.vector.set(x, y);
-  }
-
-  /**
-   * ショットのスピードを設定する
-   * @param {number} [speed] - 設定するスピード
-   */
-  setSpeed(speed) {
-    if (speed !== null && speed > 0) {
-      this.speed = speed;
-    }
-  }
-
-  /**
-   * ショットの攻撃力を設定する
-   * @param {number} [power] - 設定する攻撃力
-   */
-  setPower(power) {
-    if (power !== null && power > 0) {
-      this.power = power;
-    }
-  }
-
-  /**
-   * ショットが衝突判定を行う対象を設定する
-   * @param {Array<Character>} [targets] - 衝突判定の対象を含む配列
-   */
-  setTargets(targets) {
-    if (targets !== null && Array.isArray(targets) === true && targets.length > 0) {
-      this.targetArray = targets;
-    }
-  }
-
-  /**
-   * ショットが爆発エフェクトを発生できるように設定する
-   * @param {Array<Explosion>} [targets] - 爆発エフェクトを含む配列
-   */
-  setExplosions(targets) {
-    if (targets !== null && Array.isArray(targets) === true && targets.length > 0) {
-      this.explosionArray = targets;
-    }
+    this.frame = 0;
   }
 
   /**
@@ -119,8 +47,28 @@ class Shot extends Character {
     ) {
       this.life = 0;
     }
+
+    let target = this.targetArray[0];
+
+    if (this.frame < 100) {
+      let vector = new Position(
+        target.position.x - this.position.x,
+        target.position.y - this.position.y
+      );
+
+      let normalizedVector = vector.normalize;
+      this.vector = this.vector.normalize();
+      let cross = this.vector.cross(normalizedVector);
+      let rad = Math.PI / 180;
+      if (cross > 0) {
+        this.vector.rotate(rad);
+      } else if (cross < 0) {
+        this.vector.rotate(-rad);
+      }
+    }
     this.position.x += this.vector.x * this.speed;
     this.position.y += this.vector.y * this.speed;
+    this.angle = Math.atan2(this.vector.y, this.vector.x);
 
     this.targetArray.map((v) => {
       if (this.life <= 0 || v.life <= 0) { return; }
@@ -153,6 +101,6 @@ class Shot extends Character {
     });
 
     this.rotationDraw();
-    // this.draw();
+    ++this.frame;
   }
 }
